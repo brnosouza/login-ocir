@@ -57,6 +57,19 @@ husky - commit-msg hook exited with code 1 (error)
 If you have any questions, please check the [Conventional Commits FAQ][CCFAQ], [start a discussion][DISC] or [open an
 issue][ISSUE].
 
+## Local development
+
+Use Node.js 24 (see `.node-version`) and Bun 1.4.2. Bun manages dependencies; the action runs on Node.js, not Bun.
+
+```shell
+bun install --frozen-lockfile
+bun run all
+```
+
+Commit `bun.lock` and the rebuilt `dist/` files with dependency updates. Do not generate an npm lockfile. TypeScript
+stays on 6.0 until typescript-eslint supports TypeScript 7. ESLint stays on 9 until the GitHub plugin's transitive
+plugins support ESLint 10.
+
 ## Pull request process
 
 1. Ensure there is an issue created to track and discuss the fix or enhancement you intend to submit.

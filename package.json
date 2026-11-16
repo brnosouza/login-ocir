@@ -7,6 +7,7 @@
     "email": "oci-dax-tools_ww@oracle.com"
   },
   "private": true,
+  "type": "module",
   "homepage": "https://github.com/oracle-actions/login-ocir#readme",
   "repository": {
     "type": "git",
@@ -31,15 +32,18 @@
     ".": "./dist/index.js"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
+  "packageManager": "bun@1.4.2",
   "scripts": {
-    "bundle": "npm run format:write && npm run package",
-    "format:write": "npx prettier --write .",
-    "format:check": "npx prettier --check .",
-    "lint": "npx eslint . -c ./.github/linters/.eslintrc.yml",
-    "package": "npx ncc build src/index.ts -o dist --source-map --license THIRD_PARTY_LICENSES.txt",
-    "all": "npm run format:write && npm run lint && npm run package"
+    "bundle": "bun run format:write && bun run package",
+    "format:write": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint src",
+    "package": "ncc build src/index.ts -o dist --source-map --license THIRD_PARTY_LICENSES.txt",
+    "all": "bun run format:check && bun run lint && bun run typecheck && bun run package && bun run test",
+    "test": "node --experimental-test-module-mocks --test test/*.test.mjs",
+    "typecheck": "tsc --noEmit"
   },
   "license": "UPL-1.0",
   "files": [
@@ -48,23 +52,20 @@
     "dist/*"
   ],
   "dependencies": {
-    "@actions/core": "^1.10.1",
-    "oci-artifacts": "^2.88.2",
-    "oci-common": "^2.88.2",
-    "oci-identity": "^2.88.2"
+    "@actions/core": "^3.0.1",
+    "oci-artifacts": "^2.146.0",
+    "oci-common": "^2.146.0",
+    "oci-identity": "^2.146.0"
   },
   "devDependencies": {
-    "@types/node": "^20.16.5",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
-    "@vercel/ncc": "^0.38.1",
-    "eslint": "^8.57.0",
-    "eslint-plugin-github": "^5.0.1",
-    "eslint-plugin-jest": "^28.8.3",
-    "eslint-plugin-jsonc": "^2.16.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "prettier": "^3.3.3",
-    "prettier-eslint": "^16.3.0",
-    "typescript": "^5.6.2"
+    "@types/node": "^24.19.2",
+    "@typescript-eslint/eslint-plugin": "^8.73.0",
+    "@typescript-eslint/parser": "^8.73.0",
+    "@vercel/ncc": "^0.45.0",
+    "eslint": "^9.39.5",
+    "eslint-plugin-github": "^6.1.2",
+    "eslint-plugin-prettier": "^5.5.7",
+    "prettier": "^3.10.1",
+    "typescript": "~6.0.3"
   }
 }

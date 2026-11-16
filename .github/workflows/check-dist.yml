@@ -35,15 +35,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-          cache: npm
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
 
       - name: Install Dependencies
         id: install
-        run: npm ci
+        run: bun install --frozen-lockfile
 
       - name: Build dist/ Directory
         id: build
-        run: npm run bundle
+        run: bun run all
 
       # This will fail the workflow if the `dist/` directory is different than
       # expected.

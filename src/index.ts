@@ -3,17 +3,10 @@
  */
 import * as core from '@actions/core'
 
-import { loginOcir, logoutOcir } from './main'
+import { loginOcir, logoutOcir } from './main.js'
 
 if (core.getState('logout') === 'true') {
   logoutOcir(core.getState('registry'))
 } else {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  try {
-    loginOcir()
-  } catch (e) {
-    if (e instanceof Error) {
-      core.setFailed
-    }
-  }
+  void loginOcir()
 }
