@@ -23284,7 +23284,7 @@ class GenericRetrier {
                 }
                 const delayTime = this.retryConfiguration.delayStrategy.delay(waitContext);
                 waitContext.attemptCount++;
-                console.warn(log_1.sanitizeSensitiveData(`Request failed with Exception : ${lastKnownError.message}\nRetrying request -> Total Attempts : ${waitContext.attemptCount}, Retrying after ${delayTime} seconds...`));
+                console.warn(log_1.sanitizeSensitiveData(`Request failed with Exception : ${lastKnownError}\nRetrying request -> Total Attempts : ${waitContext.attemptCount}, Retrying after ${delayTime} seconds...`));
                 yield waiter_1.delay(delayTime);
                 GenericRetrier.refreshRequest(request);
                 attempt += 1;
@@ -88669,6 +88669,30 @@ module.exports = /*#__PURE__*/JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45
 /************************************************************************/
 var __webpack_exports__ = {};
 
+;// CONCATENATED MODULE: ./src/fetch.ts
+const originalFetch = globalThis.fetch;
+globalThis.fetch = async (...args) => {
+    try {
+        return await originalFetch(...args);
+    }
+    catch (error) {
+        const cause = error instanceof Error ? error.cause : undefined;
+        const causes = [error, cause, ...(cause instanceof AggregateError ? cause.errors : [])];
+        const codes = [
+            ...new Set(causes.flatMap(item => item &&
+                typeof item === 'object' &&
+                'code' in item &&
+                typeof item.code === 'string' &&
+                /^[A-Z0-9_]+$/.test(item.code)
+                ? [item.code]
+                : []))
+        ];
+        globalThis.console.error(`OCI fetch transport failure: ${codes.join(', ') || 'no error code available'}`);
+        throw error;
+    }
+};
+
+
 // EXTERNAL MODULE: external "os"
 var external_os_ = __nccwpck_require__(70857);
 ;// CONCATENATED MODULE: ./node_modules/@actions/core/lib/utils.js
@@ -91716,6 +91740,7 @@ function logoutOcir(registry) {
 /* Copyright (c) 2024, Oracle and/or its affiliates.
  * Licensed under the Universal Permissive License v1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
+
 
 
 if (getState('logout') === 'true') {
