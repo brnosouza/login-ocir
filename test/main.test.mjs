@@ -95,6 +95,11 @@ test('login creates private Docker credentials and saves post-action state', asy
   assert.deepEqual(state.outputs, { ocir_endpoint: 'iad.ocir.io', ocir_username: 'namespace/example-user' })
   assert.deepEqual(state.saved, { registry: 'iad.ocir.io', logout: 'true' })
   assert.deepEqual(state.failures, [])
+  assert.deepEqual(state.messages, [
+    'OCI request: Identity.listRegions',
+    'OCI request: Artifacts.getContainerConfiguration',
+    'OCI request: Identity.getUser'
+  ])
 })
 
 test('login preserves other registries and Docker settings', async () => {
@@ -146,6 +151,10 @@ test('SDK failure leaves existing credentials unchanged', async () => {
   state.error = new Error('OCI unavailable')
   await loginOcir()
   assert.deepEqual(state.failures, ['OCI unavailable'])
+  assert.deepEqual(state.messages, [
+    'OCI request: Identity.listRegions',
+    'OCI request: Artifacts.getContainerConfiguration'
+  ])
   assert.equal(readFileSync(configPath(), 'utf8'), original)
   assert.deepEqual(state.saved, {})
 })

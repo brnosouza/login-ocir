@@ -91670,14 +91670,17 @@ async function loginOcir() {
         const ic = new oci_identity.IdentityClient({
             authenticationDetailsProvider: authProvider
         });
+        info('OCI request: Identity.listRegions');
         const regionCode = (await ic.listRegions({})).items
             .find(x => x.name === authProvider.getRegion().regionId)
             ?.key?.toLocaleLowerCase();
         if (regionCode) {
             const ocir = `${regionCode}.ocir.io`;
+            info('OCI request: Artifacts.getContainerConfiguration');
             const namespace = (await ac.getContainerConfiguration({
                 compartmentId: authProvider.getTenantId()
             })).containerConfiguration.namespace;
+            info('OCI request: Identity.getUser');
             const ociUser = (await ic.getUser({ userId: authProvider.getUser() })).user.name;
             const ociToken = getInput('auth_token', { required: true });
             const authToken = Buffer.from(`${namespace}/${ociUser}:${ociToken}`).toString('base64');

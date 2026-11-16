@@ -38,6 +38,7 @@ export async function loginOcir(): Promise<void> {
       authenticationDetailsProvider: authProvider
     })
 
+    core.info('OCI request: Identity.listRegions')
     const regionCode = (await ic.listRegions({})).items
       .find(x => x.name === authProvider.getRegion().regionId)
       ?.key?.toLocaleLowerCase()
@@ -45,12 +46,14 @@ export async function loginOcir(): Promise<void> {
     if (regionCode) {
       const ocir = `${regionCode}.ocir.io`
 
+      core.info('OCI request: Artifacts.getContainerConfiguration')
       const namespace = (
         await ac.getContainerConfiguration({
           compartmentId: authProvider.getTenantId()
         })
       ).containerConfiguration.namespace
 
+      core.info('OCI request: Identity.getUser')
       const ociUser = (await ic.getUser({ userId: authProvider.getUser() })).user.name
       const ociToken = core.getInput('auth_token', { required: true })
       const authToken = Buffer.from(`${namespace}/${ociUser}:${ociToken}`).toString('base64')

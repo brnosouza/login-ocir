@@ -13,9 +13,9 @@ outputs:
   ocir_username:
     description: The full username required by OCIR for login purposes
 branding:
-  icon: 'circle'
-  color: 'red'
+  icon: "circle"
+  color: "red"
 runs:
-  using: 'node24'
-  main: 'dist/index.js'
-  post: 'dist/index.js'
+  using: "node24"
+  main: "dist/index.js"
+  # post: 'dist/index.js'
